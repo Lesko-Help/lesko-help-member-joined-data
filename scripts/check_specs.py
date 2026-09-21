@@ -167,7 +167,8 @@ def check_spec(path, bless=False):
             problems.append("%s: reviewed-at is '%s' - run --bless after reading it"
                             % (name, meta["reviewed-at"]))
         elif head_of_covered and reviewed != head_of_covered:
-            behind = git("rev-list", "--count", "%s..%s" % (reviewed, head_of_covered))
+            behind = git("rev-list", "--count", "%s..%s" % (reviewed, head_of_covered),
+                         "--", *live)
             problems.append(
                 "%s: STALE - %s commit(s) have touched %s since it was reviewed "
                 "(reviewed at %s, code now at %s)"

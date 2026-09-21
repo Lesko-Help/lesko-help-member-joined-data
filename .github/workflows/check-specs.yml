@@ -1,0 +1,31 @@
+name: check-specs
+
+# Fails when a module spec in docs/specs/ no longer matches the code it covers.
+# Only runs when code, workflows or specs change - the daily data commits touch
+# none of those, so this costs nothing on a normal day.
+
+on:
+  push:
+    paths:
+      - 'scripts/**'
+      - '.github/workflows/**'
+      - 'docs/specs/**'
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - '.github/workflows/**'
+      - 'docs/specs/**'
+  workflow_dispatch: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # check_specs.py compares each spec's reviewed-at against the last
+          # commit touching its covered files, so it needs real history.
+          fetch-depth: 0
+
+      - name: Check specs against the code they cover
+        run: python3 scripts/check_specs.py
